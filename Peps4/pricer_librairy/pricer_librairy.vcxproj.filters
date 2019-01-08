@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers sources\Outils">
+      <UniqueIdentifier>{f8d0371a-8dda-4b8a-8d2c-3fd8a4518ce8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Produits">
+      <UniqueIdentifier>{345e4e82-ec96-49c2-a15b-9db9628558d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Produits">
+      <UniqueIdentifier>{9c86f24c-2f66-4a64-b327-0eda3e84ef79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Outils">
+      <UniqueIdentifier>{19ed56de-3447-434e-8f5a-5c718538b0e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Pricer">
+      <UniqueIdentifier>{82acf3d3-3f89-4817-87da-77f528ff6946}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Pricer">
+      <UniqueIdentifier>{82b4c24c-652c-4861-b35c-7310be89714e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Models">
+      <UniqueIdentifier>{6191be10-18b9-497b-b7a7-cee2195ea666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Models">
+      <UniqueIdentifier>{7ab851f9-98f4-4c35-8c7c-5e99347234b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Methodes">
+      <UniqueIdentifier>{51ea5298-bb5b-4810-8c45-9c495598b1c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Methode">
+      <UniqueIdentifier>{b05352d6-e046-410a-a988-f766ba4bd7ed}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Call.h">
+      <Filter>Fichiers d%27en-tête\Produits</Filter>
+    </ClInclude>
+    <ClInclude Include="Curency.h">
+      <Filter>Fichiers d%27en-tête\Produits</Filter>
+    </ClInclude>
+    <ClInclude Include="Prisma.h">
+      <Filter>Fichiers d%27en-tête\Produits</Filter>
+    </ClInclude>
+    <ClInclude Include="Produit.h">
+      <Filter>Fichiers d%27en-tête\Produits</Filter>
+    </ClInclude>
+    <ClInclude Include="sousjacent.h">
+      <Filter>Fichiers d%27en-tête\Produits</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>Fichiers d%27en-tête\Outils</Filter>
+    </ClInclude>
+    <ClInclude Include="Date.h">
+      <Filter>Fichiers d%27en-tête\Outils</Filter>
+    </ClInclude>
+    <ClInclude Include="JourSemaine.h">
+      <Filter>Fichiers d%27en-tête\Outils</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportDll.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Corelation.h">
+      <Filter>Fichiers d%27en-tête\Pricer</Filter>
+    </ClInclude>
+    <ClInclude Include="Delta.h">
+      <Filter>Fichiers d%27en-tête\Pricer</Filter>
+    </ClInclude>
+    <ClInclude Include="Volatility.h">
+      <Filter>Fichiers d%27en-tête\Pricer</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackSchole.h">
+      <Filter>Fichiers d%27en-tête\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Fichiers d%27en-tête\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="MonteCarlo.h">
+      <Filter>Fichiers d%27en-tête\Methodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>Fichiers d%27en-tête\Outils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="pricer_librairy.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Call.cpp">
+      <Filter>Fichiers sources\Produits</Filter>
+    </ClCompile>
+    <ClCompile Include="Prisma.cpp">
+      <Filter>Fichiers sources\Produits</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>Fichiers sources\Outils</Filter>
+    </ClCompile>
+    <ClCompile Include="Date.cpp">
+      <Filter>Fichiers sources\Outils</Filter>
+    </ClCompile>
+    <ClCompile Include="SousJacent.cpp">
+      <Filter>Fichiers sources\Produits</Filter>
+    </ClCompile>
+    <ClCompile Include="Volatility.cpp">
+      <Filter>Fichiers sources\Pricer</Filter>
+    </ClCompile>
+    <ClCompile Include="Corelation.cpp">
+      <Filter>Fichiers sources\Pricer</Filter>
+    </ClCompile>
+    <ClCompile Include="Delta.cpp">
+      <Filter>Fichiers sources\Pricer</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Fichiers sources\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackSchole.cpp">
+      <Filter>Fichiers sources\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="MonteCarlo.cpp">
+      <Filter>Fichiers sources\Methode</Filter>
+    </ClCompile>
+    <ClCompile Include="Data.cpp">
+      <Filter>Fichiers sources\Outils</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
