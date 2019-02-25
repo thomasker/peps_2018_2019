@@ -3,8 +3,8 @@
 
 namespace Outils
 {
-	PnlVectInt* TimeManager::pnlVect_From_Date_List(const date  startDate, list<date> dateList) {
-		PnlVectInt* dateVect = pnl_vect_int_create((int)dateList.size());
+	void TimeManager::pnlVect_From_Date_List(PnlVectInt* dateVect,const date  startDate, list<date> dateList) {
+		pnl_vect_int_resize(dateVect,(int)dateList.size());
 		date dateActuel = startDate;
 		int count = 0;
 		list<date>::iterator it = dateList.begin();
@@ -18,7 +18,6 @@ namespace Outils
 			dateActuel = *it;
 			it++;
 		}
-		return dateVect;
 	}
 
 	void TimeManager::fillOpenDates(PnlVectInt* dates, date  start, date  end) {

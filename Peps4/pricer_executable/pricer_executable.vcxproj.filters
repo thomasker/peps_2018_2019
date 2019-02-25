@@ -120,6 +120,12 @@
     <ClInclude Include="TestData.h">
       <Filter>Fichiers d%27en-tête\test</Filter>
     </ClInclude>
+    <ClInclude Include="..\pricer_librairy\Basket.h">
+      <Filter>Fichiers d%27en-tête\produit</Filter>
+    </ClInclude>
+    <ClInclude Include="FileReader.h">
+      <Filter>Fichiers d%27en-tête\outils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -181,6 +187,12 @@
     </ClCompile>
     <ClCompile Include="TestData.cpp">
       <Filter>Fichiers sources\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pricer_librairy\Basket.cpp">
+      <Filter>Fichiers sources\produit</Filter>
+    </ClCompile>
+    <ClCompile Include="FileReader.cpp">
+      <Filter>Fichiers sources\outils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

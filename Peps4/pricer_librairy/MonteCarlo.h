@@ -21,16 +21,19 @@ namespace Methodes
 
 		void SimpleMonteCarlo(BlackScholeModel* model, Produit* produit, Data data);
 
+		void MonteCarloWithPast(BlackScholeModel* model, Produit* produit, Data data, PnlMat* past =NULL, int t=0);
+
 		MonteCarlo(int n, double r, int T, double thetha, double S0);
 		~MonteCarlo();
 
 		double GetPrice();
 		double GetIntervalConfiance();
+		void fillPaths(BlackScholeModel * model, PnlMat* Paths, PnlMat * past, PnlMat* Gmat, PnlVectInt* tvect, int sousjacentSize, SousJacent* sousjacent, Data data, int t);
 
-		void GetDelta(PnlVect* Delta, Produit* produit, PnlMat* prices, int n, double r, int maturite, int t);
-
+		void GetDelta(PnlVect* Delta, BlackScholeModel * model, Produit* produit, Data data, PnlMat* prices, int n, int t);
+		void GenerateNextDatePrices(PnlVect* prices, PnlVect* pastPrices, BlackScholeModel * model, Produit* produit, int t, Data data);
 	private:
-		double GetRightSigma(SousJacent sj, Data data, int date);
+		double GetRightSigma(SousJacent sj, Data data);
 
 		void GenerateRandVect(PnlVect* G, int n, PnlRng* rng = NULL);
 		void GenerateMBSVect(PnlVect* W, int n, PnlRng *rng);

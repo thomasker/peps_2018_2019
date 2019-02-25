@@ -20,7 +20,7 @@ namespace Outils
 		* créé un pnlvect de la taille de la liste de date
 		* qui contient la difference en jour entre la start date et chaque element de la liste de date
 		*/
-		static PnlVectInt* pnlVect_From_Date_List( date startDate, list<date> dateList);
+		static void pnlVect_From_Date_List(PnlVectInt* dateVect, date startDate, list<date> dateList);
 
 		/* remplis le vecteur dates des jours ouverts, pour chaque n eme element du vecteur , 
 		* est enregistré  le nombre de jour d ecart entre start et le n eme jour ouvert 

@@ -10,6 +10,7 @@ namespace Produits
 	{
 	public:
 		SousJacent();
+		SousJacent(char *name, curency curencys);
 		void setName(char *name);
 		const char* getName();
 		curency monaie;

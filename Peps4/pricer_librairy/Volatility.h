@@ -15,10 +15,10 @@ namespace Pricer
 	private:
 		static double methode1(PnlVect * historic);
 		static double methode2(PnlVect * historic);
-		static double methode3(PnlVect *historic, PnlVect *dates);
+		static double methode3(PnlVect *historic, PnlVectInt *dates);
 	public:
-		PRICER_API static double historicVolatility (PnlVect* historic, PnlVect *dates);
-		PRICER_API static void historicVolatility(PnlVect* volatility, PnlMat* historic, PnlVect *dates);
+		PRICER_API static double historicVolatility (PnlVect* historic, PnlVectInt *dates);
+		PRICER_API static void historicVolatility(PnlVect* volatility, PnlMat* historic, PnlVectInt *dates);
 		//PRICER_API static double implicitVolatility(PnlVect* historic);
 
 	};

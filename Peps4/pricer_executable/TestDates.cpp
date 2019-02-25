@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "TestDates.h"
+#include <map>
 
 namespace Test
 {

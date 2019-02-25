@@ -1,5 +1,6 @@
 #pragma once
 #include "Call.h"
+#include "Basket.h"
 #include "BlackSchole.h"
 #include "MonteCarlo.h"
 #include "pnl/pnl_finance.h"
@@ -12,6 +13,9 @@ namespace Pricing
 	{
 	public:
 		static void pricingCall();
+		static void pricingBasket();
 		static void pricingPrisma();
+		static void hedgePrisma();
+		static void dayToDayPrisma();
 	};
 }

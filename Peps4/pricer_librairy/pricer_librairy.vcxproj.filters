@@ -99,6 +99,18 @@
     <ClInclude Include="Data.h">
       <Filter>Fichiers d%27en-tête\Outils</Filter>
     </ClInclude>
+    <ClInclude Include="Basket.h">
+      <Filter>Fichiers d%27en-tête\Produits</Filter>
+    </ClInclude>
+    <ClInclude Include="GetData.h">
+      <Filter>Fichiers d%27en-tête\Outils</Filter>
+    </ClInclude>
+    <ClInclude Include="GetDataSimul.h">
+      <Filter>Fichiers d%27en-tête\Outils</Filter>
+    </ClInclude>
+    <ClInclude Include="GetDataHisto.h">
+      <Filter>Fichiers d%27en-tête\Outils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -144,6 +156,15 @@
       <Filter>Fichiers sources\Methode</Filter>
     </ClCompile>
     <ClCompile Include="Data.cpp">
+      <Filter>Fichiers sources\Outils</Filter>
+    </ClCompile>
+    <ClCompile Include="Basket.cpp">
+      <Filter>Fichiers sources\Produits</Filter>
+    </ClCompile>
+    <ClCompile Include="GetDataSimul.cpp">
+      <Filter>Fichiers sources\Outils</Filter>
+    </ClCompile>
+    <ClCompile Include="GetDataHisto.cpp">
       <Filter>Fichiers sources\Outils</Filter>
     </ClCompile>
   </ItemGroup>

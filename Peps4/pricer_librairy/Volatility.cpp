@@ -2,7 +2,7 @@
 #include "Volatility.h"
 namespace Pricer
 {
-	double Pricer::Volatility::historicVolatility(PnlVect * historic, PnlVect *dates)
+	double Volatility::historicVolatility(PnlVect * historic, PnlVectInt *dates)
 	{
 		/*double toto = methode1(historic);
 		double tata = methode2(historic);*/
@@ -10,7 +10,7 @@ namespace Pricer
 		return  tutu;
 	}
 
-	 void Volatility::historicVolatility(PnlVect * volatility, PnlMat * historic, PnlVect *dates)
+	 void Volatility::historicVolatility(PnlVect * volatility, PnlMat * historic, PnlVectInt *dates)
 	{
 		 if (volatility->size != historic->n) {
 			 pnl_vect_resize(volatility, historic->n);
@@ -51,14 +51,14 @@ namespace Pricer
 		return  sqrt(variance);
 	}
 
-	double Volatility::methode3(PnlVect *historic, PnlVect *dates) {
+	double Volatility::methode3(PnlVect *historic, PnlVectInt *dates) {
 		double biai = 0;
 		double moyenne = 0;
 		double pas = 0;
 		int n = historic->size;
 
 		for (int i = 1; i < n; ++i) {
-			pas = GET(dates, i) - GET(dates, i - 1);
+			pas = pnl_vect_int_get(dates, i) - pnl_vect_int_get(dates, i - 1);
 			biai += pow(log(GET(historic, i) / GET(historic, i - 1)) / sqrt(pas), 2);
 			moyenne += log(GET(historic, i) / GET(historic, i - 1)) / sqrt(pas);
 		}

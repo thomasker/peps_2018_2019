@@ -29,21 +29,22 @@ namespace Test
 	bool TestTimeManager::TestPnlVect_From_Date_List()
 	{
 		list<date> dateList = { date(1,1,2002) };
-		PnlVectInt* result = TimeManager::pnlVect_From_Date_List(date(1, 1, 2002), dateList);
+		PnlVectInt* result = pnl_vect_int_create(1);
+		TimeManager::pnlVect_From_Date_List(result, date(1, 1, 2002), dateList);
 		if (result->size != 1 || pnl_vect_int_get(result, 0) != 0) {
 			std::cout << "error PnlVect From Date List 1 date = start !\n";
 			return false;
 		}
 
 		dateList = { date(5,1,2002), date(3,1,2002) };
-		result = TimeManager::pnlVect_From_Date_List(date(1, 1, 2002), dateList);
+		TimeManager::pnlVect_From_Date_List(result,date(1, 1, 2002), dateList);
 		if (result->size != 2 || pnl_vect_int_get(result, 0) != 4 || pnl_vect_int_get(result, 1) != 2) {
 			std::cout << "error PnlVect From Date List 2 date non trillee !\n";
 			return false;
 		}
 
 		dateList = { date(3,1,2002) , date(5,1,2002) };
-		result = TimeManager::pnlVect_From_Date_List(date(1, 1, 2002), dateList);
+		TimeManager::pnlVect_From_Date_List(result,date(1, 1, 2002), dateList);
 		if (result->size != 2 || pnl_vect_int_get(result, 0) != 2 || pnl_vect_int_get(result, 1) != 4) {
 			std::cout << "error PnlVect From Date List 2 date  trillee !\n";
 			return false;

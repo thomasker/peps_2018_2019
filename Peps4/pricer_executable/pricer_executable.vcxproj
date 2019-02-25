@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\pricer_librairy\Basket.h" />
     <ClInclude Include="..\pricer_librairy\BlackSchole.h" />
     <ClInclude Include="..\pricer_librairy\Call.h" />
     <ClInclude Include="..\pricer_librairy\Corelation.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="..\pricer_librairy\TimeManager.h" />
     <ClInclude Include="..\pricer_librairy\Volatility.h" />
     <ClInclude Include="ExportDll.h" />
+    <ClInclude Include="FileReader.h" />
     <ClInclude Include="Pricing.h" />
     <ClInclude Include="TestCorelation.h" />
     <ClInclude Include="TestData.h" />
@@ -182,6 +184,7 @@
     <ClInclude Include="TestTimeManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\pricer_librairy\Basket.cpp" />
     <ClCompile Include="..\pricer_librairy\BlackSchole.cpp" />
     <ClCompile Include="..\pricer_librairy\Call.cpp" />
     <ClCompile Include="..\pricer_librairy\Corelation.cpp" />
@@ -194,6 +197,7 @@
     <ClCompile Include="..\pricer_librairy\SousJacent.cpp" />
     <ClCompile Include="..\pricer_librairy\TimeManager.cpp" />
     <ClCompile Include="..\pricer_librairy\Volatility.cpp" />
+    <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

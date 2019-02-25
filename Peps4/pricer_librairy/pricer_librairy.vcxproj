@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Basket.h" />
     <ClInclude Include="BlackSchole.h" />
     <ClInclude Include="Call.h" />
     <ClInclude Include="Corelation.h" />
@@ -161,6 +162,9 @@
     <ClInclude Include="Date.h" />
     <ClInclude Include="Delta.h" />
     <ClInclude Include="ExportDll.h" />
+    <ClInclude Include="GetData.h" />
+    <ClInclude Include="GetDataHisto.h" />
+    <ClInclude Include="GetDataSimul.h" />
     <ClInclude Include="JourSemaine.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="MonteCarlo.h" />
@@ -173,12 +177,15 @@
     <ClInclude Include="Volatility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Basket.cpp" />
     <ClCompile Include="BlackSchole.cpp" />
     <ClCompile Include="Call.cpp" />
     <ClCompile Include="Corelation.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Delta.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="GetDataHisto.cpp" />
+    <ClCompile Include="GetDataSimul.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="MonteCarlo.cpp" />
     <ClCompile Include="pricer_librairy.cpp" />
