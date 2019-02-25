@@ -112,6 +112,36 @@ namespace Pricing
 		double IC = mc.GetIntervalConfiance();
 		cout << "Prix via le Pricer : " << Price << "IC via le Pricer : " << IC << "\n";
 	}
+	void PricingOptions::hedgeCall()
+	{
+		cout << "\n \n \n Pricing d un Call: " << "\n";
+		double K = 110;
+		double S0 = 100;
+		date start = date(2, 1, 2002);
+		date end = date(6, 1, 2002);
+		PnlVectInt* dates = pnl_vect_int_create(1);
+		TimeManager::fillOpenDates(dates, start, end);
+		int T = pnl_vect_int_get(dates, dates->size - 1);
+		int n = 50000;
+		double r = 0.1;
+
+		double sigma = 0.01;
+		PnlVect* sigmaVect = pnl_vect_create_from_double(1, sigma);
+
+		Call* option = new Call(K, start, end);
+		BlackScholeModel* BnS = new BlackScholeModel();
+		MonteCarlo  mc = MonteCarlo(n, r, T, 0, S0);
+		Data data = Data(option);
+		data.SetVolatilitySouJacent(sigmaVect);
+
+		PnlVect* Deltha = pnl_vect_create_from_double(option->GetSousjacentsSize(), 0);
+		PnlMat* prix = pnl_mat_create(option->GetSousjacentsSize(), option->GetDates()->size);
+		pnl_mat_set_all(prix, 100);
+
+		mc.GetDelta(Deltha, BnS, option, data, prix, 100, 800);
+		cout << "les deltha via le pricer : " << "\n";
+		pnl_vect_print(Deltha);
+	}
 	void PricingOptions::hedgePrisma()
 	{
 		cout << "\n \n \n hedging du produit Prisma: " << "\n";

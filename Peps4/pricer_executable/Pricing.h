@@ -15,6 +15,7 @@ namespace Pricing
 		static void pricingCall();
 		static void pricingBasket();
 		static void pricingPrisma();
+		static void hedgeCall();
 		static void hedgePrisma();
 		static void dayToDayPrisma();
 	};
