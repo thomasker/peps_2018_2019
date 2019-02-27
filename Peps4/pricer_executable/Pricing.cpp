@@ -123,14 +123,14 @@ namespace Pricing
 		TimeManager::fillOpenDates(dates, start, end);
 		int T = pnl_vect_int_get(dates, dates->size - 1);
 		int n = 50000;
-		double r = 0.1;
+		double r = 0.01;
 
 		double sigma = 0.01;
 		PnlVect* sigmaVect = pnl_vect_create_from_double(1, sigma);
 
 		Call* option = new Call(K, start, end);
 		BlackScholeModel* BnS = new BlackScholeModel();
-		MonteCarlo  mc = MonteCarlo(n, r, T, 0, S0);
+		MonteCarlo  mc = MonteCarlo(n, r, T, 0.2, S0);
 		Data data = Data(option);
 		data.SetVolatilitySouJacent(sigmaVect);
 
@@ -138,9 +138,15 @@ namespace Pricing
 		PnlMat* prix = pnl_mat_create(option->GetSousjacentsSize(), option->GetDates()->size);
 		pnl_mat_set_all(prix, 100);
 
-		mc.GetDelta(Deltha, BnS, option, data, prix, 100, 800);
-		cout << "les deltha via le pricer : " << "\n";
+		mc.GetDelta(Deltha, BnS, option, data, prix, 10000, 0);
+		cout << "prix  : "<< mc .GetPrice()<<" et les deltha via le pricer : " << "\n";
 		pnl_vect_print(Deltha);
+		double* price = new double();
+		*price = 0;
+		double *deltha = new double();
+		*deltha = 0;
+		double tot = pnl_cf_call_bs(S0, K, T, r, 0, sigma, price, deltha);
+		cout << "Prix via pnl : " << *price << "  deltha via pnl : " << *deltha << "\n";
 	}
 	void PricingOptions::hedgePrisma()
 	{
