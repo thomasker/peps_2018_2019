@@ -114,7 +114,7 @@ namespace Pricing
 	}
 	void PricingOptions::hedgeCall()
 	{
-		cout << "\n \n \n Pricing d un Call: " << "\n";
+		cout << "\n \n \n hedging d un Call: " << "\n";
 		double K = 110;
 		double S0 = 100;
 		date start = date(2, 1, 2002);
@@ -138,7 +138,7 @@ namespace Pricing
 		PnlMat* prix = pnl_mat_create(option->GetSousjacentsSize(), option->GetDates()->size);
 		pnl_mat_set_all(prix, 100);
 
-		mc.GetDelta(Deltha, BnS, option, data, prix, 10000, 0);
+		mc.GetDelta(Deltha, BnS, option, data, prix, 100000, 0);
 		cout << "prix  : "<< mc .GetPrice()<<" et les deltha via le pricer : " << "\n";
 		pnl_vect_print(Deltha);
 		double* price = new double();
@@ -147,6 +147,47 @@ namespace Pricing
 		*deltha = 0;
 		double tot = pnl_cf_call_bs(S0, K, T, r, 0, sigma, price, deltha);
 		cout << "Prix via pnl : " << *price << "  deltha via pnl : " << *deltha << "\n";
+ }
+
+	void PricingOptions::hedgeBasket() {
+		cout << "\n \n \n hedging d une option de basket contenant 10 actif independant : " << "\n";
+		double K = 110;
+		double S0 = 100;
+		date start = date(2, 1, 2002);
+		date end = date(6, 1, 2002);
+		PnlVectInt* dates = pnl_vect_int_create(1);
+		TimeManager::fillOpenDates(dates, start, end);
+		int T = pnl_vect_int_get(dates, dates->size - 1);
+		int n = 1000;
+		double r = 0.1;
+
+
+		Basket* option = new Basket(K, start, end);
+
+		double sigma = 0.01;
+		PnlVect* sigmaVect = pnl_vect_create_from_double(option->GetSousjacentsSize(), sigma);
+		PnlVect* diag = pnl_vect_create_from_double(option->GetSousjacentsSize(), 1);
+		//pnl_vect_print(diag);
+		PnlMat* correlation = pnl_mat_create_diag(diag);
+		//pnl_mat_print(correlation);
+		Data data = Data(option);
+		data.SetVolatilitySouJacent(sigmaVect);
+		data.SetCorrelations(correlation);
+
+
+
+		BlackScholeModel* BnS = new BlackScholeModel();
+
+		MonteCarlo  mc = MonteCarlo(n, r, T, 0, S0);
+
+		PnlVect* Deltha = pnl_vect_create_from_double(option->GetSousjacentsSize(), 0);
+		PnlMat* prix = pnl_mat_create(option->GetSousjacentsSize(), option->GetDates()->size);
+		pnl_mat_set_all(prix, 100);
+
+		mc.GetDelta(Deltha, BnS, option, data, prix, 100000, 0);
+		pnl_vect_print(Deltha);
+
+		/*cout << "Prix via le Pricer : " << Price << "IC via le Pricer : " << IC << "\n";*/
 	}
 	void PricingOptions::hedgePrisma()
 	{
