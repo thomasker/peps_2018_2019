@@ -27,9 +27,7 @@ namespace Outils
 			}
 		}
 
-		Hedge = pnl_vect_create_from_double(tmp, 0.);
-		HedgePriceHistory = pnl_vect_create_from_double(datesSize, 0.);
-
+		
 		VolatilitySousJacent = pnl_vect_create_from_double(tmp,0.);
 		VolatilityCurency = pnl_vect_create_from_double(tmp,0.);
 		
@@ -41,11 +39,13 @@ namespace Outils
 
 		correlations = pnl_mat_create_from_double(tmp+ tmp2, tmp+ tmp2,1.);
 
-		Rates = pnl_vect_create_from_double( tmp2 + 1, 0.);
+		Rates = pnl_vect_create_from_double(1 + tmp2 , 0.);
 
 		Hedge = pnl_vect_create_from_double(tmp + tmp2 + 1, 0.);
 		HedgePriceHistory = pnl_vect_create_from_double(datesSize, 0.);
-		
+		ProductPriceHistory = pnl_vect_create_from_double(datesSize, 0.);
+		SousJacentsPrice = pnl_mat_create_from_double(datesSize, tmp + tmp2,0.);
+
 		if (tmp2 > 0) {
 			VolatilityHistoricCurency = pnl_mat_create_from_double(datesSize, tmp2,0.);
 			delthaHistoricCurency = pnl_mat_create_from_double(datesSize, tmp2,0.);

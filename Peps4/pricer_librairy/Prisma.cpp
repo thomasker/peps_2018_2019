@@ -19,11 +19,14 @@ namespace Produits
 		double prime = GuaranteedRefund;
 		bool continu = true;
 		int tmp = 0;
+		//int test = 0;
+		//double test2 = 0.;
 		for (int i = 0; i < QuarterlyObservationDates->size; i++)
 		{
+			tmp = (*InversedDates)[(int)pnl_vect_int_get(QuarterlyObservationDates, i)];
 			for (int j = 0; j < paths->m; j++)
 			{
-				tmp = (*InversedDates)[(int)pnl_vect_int_get(QuarterlyObservationDates, i)];
+				//test = pnl_mat_get(paths, j, tmp);
 				if (pnl_mat_get(paths, j, tmp) < 60)
 				{
 					continu = false;
@@ -43,7 +46,9 @@ namespace Produits
 			S0 = pnl_mat_get(paths, i, 0);
 			for (int j = 0; j < AnnualObservationDates->size; j++)
 			{
-				//tmp = InversedDates[(int)pnl_vect_int_get(AnnualObservationDates, j)];
+				//test = (int)pnl_vect_int_get(AnnualObservationDates, j);
+				tmp = (*InversedDates)[(int)pnl_vect_int_get(AnnualObservationDates, j)];
+				//test2 = (pnl_mat_get(paths, i, tmp) - S0) / S0;
 				sum += (pnl_mat_get(paths, i, tmp) - S0) / S0;
 			}
 		}
@@ -114,7 +119,7 @@ namespace Produits
 		GuaranteedRefund = 70.;
 		Turnout = 0.2;
 		FixedPremium = 8.;
-		date  start = date(3, 10, 2002, Mercredi);
+		date  start = date(3, 10, 2002, Jeudi);
 		date  end = date(27, 12, 2007);
 
 

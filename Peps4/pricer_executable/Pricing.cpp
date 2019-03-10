@@ -112,7 +112,7 @@ namespace Pricing
 		double IC = mc.GetIntervalConfiance();
 		cout << "Prix via le Pricer : " << Price << "IC via le Pricer : " << IC << "\n";
 	}
-	void PricingOptions::hedgeCall()
+	void PricingOptions::deltaCall()
 	{
 		cout << "\n \n \n hedging d un Call: " << "\n";
 		double K = 110;
@@ -149,7 +149,7 @@ namespace Pricing
 		cout << "Prix via pnl : " << *price << "  deltha via pnl : " << *deltha << "\n";
  }
 
-	void PricingOptions::hedgeBasket() {
+	void PricingOptions::deltaBasket() {
 		cout << "\n \n \n hedging d une option de basket contenant 10 actif independant : " << "\n";
 		double K = 110;
 		double S0 = 100;
@@ -189,11 +189,11 @@ namespace Pricing
 
 		/*cout << "Prix via le Pricer : " << Price << "IC via le Pricer : " << IC << "\n";*/
 	}
-	void PricingOptions::hedgePrisma()
+	void PricingOptions::deltaPrisma()
 	{
 		cout << "\n \n \n hedging du produit Prisma: " << "\n";
 		double S0 = 100;
-		int n = 500;
+		int n = 1000;
 		double r = 0.1 / 365;
 		double thetha = 0.01;
 
@@ -220,12 +220,95 @@ namespace Pricing
 		PnlMat* prix = pnl_mat_create(option->GetSousjacentsSize(), option->GetDates()->size);
 		pnl_mat_set_all(prix, 100);
 
-		mc.GetDelta(Deltha,BnS, option, data, prix,100,800);
+		mc.GetDelta(Deltha,BnS, option, data, prix, n,0);
 		cout << "les deltha via le pricer : "  << "\n";
 		pnl_vect_print(Deltha);
 	}
-	void PricingOptions::dayToDayPrisma()
+	void PricingOptions::hedgeCall()
 	{
+		//initialisé 
+		cout << "\n \n \n hedging d un Call: " << "\n";
+		//Caracteristique du call 
+		double K = 105;
+		double S0 = 100;
+		double r = 0.02;
+		double sigma = 0.01;
+		date start = date(2, 1, 2002);
+		date end = date(6, 1, 2002);
+
+		// initialisation des doné utile pour l'evaluation du prix 
+		int n = 10000;
+		PnlVectInt* dates = pnl_vect_int_create(1);
+		TimeManager::fillOpenDates(dates, start, end);
+		int T = pnl_vect_int_get(dates, dates->size - 1);
+		PnlVect* sigmaVect = pnl_vect_create_from_double(1, sigma);
+
+		//creation des objects 
+		Call* option = new Call(K, start, end);
+		BlackScholeModel* BnS = new BlackScholeModel();
+		MonteCarlo  mc = MonteCarlo(n, r, T, 0.2, S0);
+		Data data = Data(option);
+
+
+		data.SetVolatilitySouJacent(sigmaVect);
+		/*ici c est des truc que je peut integré a data */
+		PnlVect* Deltha = pnl_vect_create_from_double(option->GetSousjacentsSize(), 0);
+		PnlVect* fisrtPrice = pnl_vect_create_from_double(option->GetSousjacentsSize(), S0);
+		pnl_vect_print(fisrtPrice);
+		//pnl_mat_print(data.SousJacentsPrice);
+		pnl_mat_set_row(data.SousJacentsPrice, fisrtPrice, 0);
+		pnl_vect_set(data.HedgePriceHistory, 0, 3);
+
+		
+		// 1ere date 
+		// calculé le prix , et les deltha,
+		mc.MonteCarloWithPast(BnS, option, data, data.SousJacentsPrice, 0);
+		pnl_vect_set(data.ProductPriceHistory, 0, mc.GetPrice());
+		mc.GetDelta(Deltha,BnS, option, data, pnl_mat_transpose(data.SousJacentsPrice),n,0);
+		// créée le portefeuille de couverture 
+		pnl_vect_set(data.Hedge,0, GET(data.HedgePriceHistory, 0)*GET(Deltha,0)/S0);// d*P(t-1)*/S(t-1)
+		pnl_vect_set(data.Hedge, 1, GET(data.HedgePriceHistory,0)*(1-GET(Deltha, 0))); //(1-d)*P(t-1)
+		double prix = 0.;
+		
+		
+		//autres date
+		for (int nt = 1; nt < option->GetDates()->size - 1; nt++) {
+			// evolution des prix des sous jacents
+			mc.GenerateNextDatePrices(BnS, option,  data, nt);
+			/*cout << "avec nt ="<<nt<<" on a : \n";
+			pnl_mat_print(data.SousJacentsPrice);*/
+			//  calcul du prix , et des deltha et le prix du portefeille de couverture
+			mc.MonteCarloWithPast(BnS, option, data, pnl_mat_transpose(data.SousJacentsPrice), nt);
+			pnl_vect_set(data.ProductPriceHistory, nt, mc.GetPrice());
+			mc.GetDelta(Deltha, BnS, option, data, pnl_mat_transpose(data.SousJacentsPrice), n, nt);
+			//P(t) = d*P(t-1)/S(t-1) * S(t) + (1-d)*P(t-1) * r
+			prix = GET(data.Hedge, 0)* MGET(data.SousJacentsPrice, nt, 0)+ GET(data.Hedge, 1)*GET(data.Rates,0);
+			pnl_vect_set(data.HedgePriceHistory, nt, prix);
+			// créée le portefeuille de couverture
+			pnl_vect_set(data.Hedge, 0, GET(Deltha, 0) * prix / MGET(data.SousJacentsPrice, nt, 0));// d*P(t)*/S(t)
+			pnl_vect_set(data.Hedge, 1, (1 - GET(Deltha, 0) * prix)); //(1-d)*P(t)
+		}
+		//dernierre date 
+		// evolution des prix des sous jacents
+		int lastDay = option->GetDates()->size - 1;
+		mc.GenerateNextDatePrices(BnS, option, data, lastDay);
+		// calcule du prix et le prix du portefeille de couverture
+		double finalPrice = option->GetPrice(pnl_mat_transpose(data.SousJacentsPrice), GET(data.Rates, 0), option->GetDates()->size - 1);
+		pnl_vect_set(data.ProductPriceHistory , lastDay, finalPrice);
+		prix = GET(data.Hedge, 0)* MGET(data.SousJacentsPrice, lastDay,0) + GET(data.Hedge, 1)*GET(data.Rates, 0);
+		pnl_vect_set(data.HedgePriceHistory, lastDay, prix);
+		// calcul du pnl final 
+		double pnl = prix - finalPrice;
+		cout << "l evolution du prix du sous jacent : \n";
+		pnl_mat_print(data.SousJacentsPrice);
+		cout << "l evolution du prix du produit : \n";
+		pnl_vect_print(data.ProductPriceHistory);
+		cout << "l evolution du prix de la couverture : \n";
+		pnl_vect_print(data.HedgePriceHistory);
+		cout << "le pnl : " << pnl << "\n";
+	}
+	void PricingOptions::dayToDayPrisma()
+	{// ATENTION NE MARCHE PAS LE CODE A EVOLUé DEPUIS 
 		double S0 = 100;
 		int n = 10;
 		double r = 0.1 / 365;
@@ -233,12 +316,12 @@ namespace Pricing
 
 		Prisma* option = new Prisma();
 
-		double SjSize = option->GetSousjacentsSize();
+		int SjSize = option->GetSousjacentsSize();
 
 		double sigma = 0.01;
 		PnlVect* sigmaVect = pnl_vect_create_from_double(SjSize, sigma);
-		PnlVect* sigmaCurency = pnl_vect_create_from_double(option->GetNbForeignCurrency(), sigma);
-		PnlVect* diag = pnl_vect_create_from_double(SjSize + option->GetNbForeignCurrency(), 1);
+		PnlVect* sigmaCurency = pnl_vect_create_from_double(option->GetNbForeignCurrency(), (double)sigma);
+		PnlVect* diag = pnl_vect_create_from_double(SjSize + option->GetNbForeignCurrency(), 1.);
 
 		PnlMat* correlation = pnl_mat_create_diag(diag);
 
@@ -271,13 +354,13 @@ namespace Pricing
 		pnl_vect_set_all(data.Hedge, 0.);
 		for (int k = 0; k < SjSize; k++) {// attention monaie , peut ne pas etre bien rangé , securité a rajouté
 			double tmp = GET(Deltha, k);
-			double monaie = option->GetSousjacents()[k].monaie;
+			int monaie = option->GetSousjacents()[k].monaie;
 			pnl_vect_set(data.Hedge, k, tmp);
 			pnl_vect_set(data.Hedge, SjSize + monaie, GET(data.Hedge, SjSize + monaie) + 1 - tmp);
 		}
 		for (int t = 1; t < option->GetDates()->size; t++) {
 			// generation de l evolution des prix
-			mc.GenerateNextDatePrices(Prices, PastPrices, BnS, option, t + 1, data);
+			//mc.GenerateNextDatePrices(Prices, PastPrices, BnS, option, t + 1, data);
 			data.SetPriceHistoricSousJacent(Prices, t + 1);
 			pnl_mat_set_row(prix, Prices, t);
 			// prend les ancien deltha et calcul le prix de la couverture
@@ -302,7 +385,7 @@ namespace Pricing
 			pnl_vect_set_all(data.Hedge, 0.);
 			for (int k = 0; k < SjSize; k++) {// attention monaie , peut ne pas etre bien rangé , securité a rajouté
 				double tmp = GET(Deltha, k);
-				double monaie = option->GetSousjacents()[k].monaie;
+				int monaie = option->GetSousjacents()[k].monaie;
 				pnl_vect_set(data.Hedge, k, tmp);				
 				pnl_vect_set(data.Hedge, SjSize+ monaie, GET(data.Hedge, SjSize + monaie) + 1 - tmp);
 			}

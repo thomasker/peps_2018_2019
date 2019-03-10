@@ -31,7 +31,7 @@ namespace Methodes
 		void fillPaths(BlackScholeModel * model, PnlMat* Paths, PnlMat * past, PnlMat* Gmat, PnlVectInt* tvect, int sousjacentSize, SousJacent* sousjacent, Data data, int t);
 
 		void GetDelta(PnlVect* Delta, BlackScholeModel * model, Produit* produit, Data data, PnlMat* prices, int n, int t);
-		void GenerateNextDatePrices(PnlVect* prices, PnlVect* pastPrices, BlackScholeModel * model, Produit* produit, int t, Data data);
+		void GenerateNextDatePrices(BlackScholeModel * model, Produit* produit, Data data, int t);
 	private:
 		double GetRightSigma(SousJacent sj, Data data);
 
