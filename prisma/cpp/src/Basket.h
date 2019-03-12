@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Produit.h"
 #include "pnl/pnl_matrix.h"
 #include "Date.h"
@@ -10,24 +9,24 @@ using namespace Outils;
 
 namespace  Produits
 {
-	class  Call :public Produit
+	class  Basket :public Produit
 	{
 	public:
 
 		double GetPrice(PnlMat* paths, double r, int t);
-		double GetPayOff(PnlMat* paths) ;
+		double GetPayOff(PnlMat* paths);
 		PnlVectInt* GetDates();
 		SousJacent* GetSousjacents();
 		int GetSousjacentsSize();
 		int GetNbForeignCurrency();
-		Call(double K, date start, date end);
-		~Call();
+		Basket(double K, date start, date end);
+		~Basket();
 
 	private:
+		void SousJacentsConstructor();
 		double _K;
 		PnlVectInt* dates;
-		SousJacent sousJacents[1];
-		int sousJacentsSize = 1;
-		//int _T;
+		SousJacent sousJacents[10];
+		int sousJacentsSize = 10;
 	};
 }
