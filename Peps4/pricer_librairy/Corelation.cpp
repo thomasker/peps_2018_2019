@@ -59,5 +59,6 @@ namespace Pricer
 				pnl_mat_set(correlations, j, i, tmp);
 			}
 		}
+		pnl_mat_chol(correlations);
 	}
 }
