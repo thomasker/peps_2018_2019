@@ -5,16 +5,11 @@
 #include "Call.h"// to delete
 #include "Data.h"
 
-//#ifdef METHODES_EXPORTS  
-//#define METHODES_API __declspec(dllexport)   
-//#else  
-//#define METHODES_API __declspec(dllimport)   
-//#endif  
 using namespace Models;
 using namespace Produits;
 namespace Methodes
 {
-	class  MonteCarlo
+	class MonteCarlo
 	{
 	public:
 

@@ -9,7 +9,7 @@ using namespace Models;
 
 namespace Pricing 
 {
-	class PricingOptions 
+	class PricingOptions
 	{
 	public:
 		static void pricingCall();
@@ -21,6 +21,13 @@ namespace Pricing
 		static void deltaPrisma();
 
 		static void hedgeCall();
-		static void dayToDayPrisma();
+		static void hedgeBasket();
+		static string hedgePrisma();
+
+		
+	private:
+		static string  JsonPrisma(Data datas, int nbday);
+		static double PriceHedge(Produit* option, Data data, int nt, int dt);
+		static void CreatPortfolio(Produit* option, Data data, int nt, PnlVect* Delta);
 	};
 }

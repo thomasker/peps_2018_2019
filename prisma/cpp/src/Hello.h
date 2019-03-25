@@ -6,6 +6,8 @@ extern "C" {
 
 MODULE_API void sayHelloWorld();
 MODULE_API int returnInteger();
+MODULE_API char* jsonprisma();
+
 
 #ifdef __cplusplus
 }

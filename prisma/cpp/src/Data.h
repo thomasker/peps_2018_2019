@@ -1,9 +1,6 @@
 #pragma once
-
 #include "pnl/pnl_matrix.h"
 #include <map>
-//#include <iostream>
-//#include <cassert>
 #include <exception>
 
 #include "Produit.h"
@@ -49,7 +46,8 @@ namespace Outils
 		BlackScholeModel* _model;
 		Data(Produit* produit);
 
-		PnlVect* Rates; // taux de rendement (eur -- autres curency) 
+		PnlVect* ZeroRates; // taux de rendement (eur -- autres curency) 
+		PnlVect* CurencyRates; // taux de change ( 1 -- autre taux de change)
 		PnlVect* Hedge; // constitution du portefuille de couverture a une date ( sous jecents  -- zero coupons )
 		PnlVect* HedgePriceHistory;// historique des prix du portefeuille de couverture 
 		PnlVect* ProductPriceHistory; // historique des prix du produit
