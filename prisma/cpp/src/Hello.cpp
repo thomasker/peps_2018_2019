@@ -13,3 +13,8 @@ char * jsonprisma()
 	strcpy(cstr, str.c_str());
 	return cstr;
 }
+
+//string jsonPrismaString()
+//{
+//	return string();
+//}

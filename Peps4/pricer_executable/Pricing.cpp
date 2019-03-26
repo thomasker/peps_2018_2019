@@ -498,7 +498,6 @@ namespace Pricing
 			dt = pnl_vect_int_get(option->GetDates(), nt) - pnl_vect_int_get(option->GetDates(), nt - 1);
 			// evolution des prix des sous jacents
 			mc.GenerateNextDatePrices(BnS, option, data, nt);
-			// ICI FAIR UN TRUC POUR L EVOLUTON DES TAUX ............................................................................
 			//  calcul du prix , et des delta et le prix du portefeille de couverture
 			mc.GetDelta(Delta, BnS, option, data, pnl_mat_transpose(data.SousJacentsPrice), n, nt);
 			pnl_vect_set(data.ProductPriceHistory, nt, mc.GetPrice());
@@ -579,10 +578,10 @@ namespace Pricing
 		int monaieIndice = 0;
 		for (int i = 0; i < option->GetSousjacentsSize(); i++) {
 			monaieIndice = option->GetSousjacents()[i].monaie;
-			prix += GET(data.Hedge, i)* MGET(data.SousJacentsPrice, nt, i) / MGET(data.SousJacentsPrice, nt - 1, i)* GET(data.CurencyRates, monaieIndice);
+			prix += GET(data.Hedge, i)* MGET(data.SousJacentsPrice, nt, i) / MGET(data.SousJacentsPrice, nt - 1, i)* MGET(data.CurencyRates, nt , monaieIndice);
 		}
 		for (int i = 0; i <= option->GetNbForeignCurrency(); i++) {
-			prix += GET(data.Hedge, option->GetSousjacentsSize() + i) *pow(1 + GET(data.ZeroRates, i), dt)* GET(data.CurencyRates, i);
+			prix += GET(data.Hedge, option->GetSousjacentsSize() + i) *pow(1 + GET(data.ZeroRates, i), dt)* MGET(data.CurencyRates, nt , i);
 		}
 		pnl_vect_set(data.HedgePriceHistory, nt, prix);
 		return prix;
@@ -596,14 +595,14 @@ namespace Pricing
 		for (int i = 0; i < option->GetSousjacentsSize(); i++) {
 			monaieIndice = option->GetSousjacents()[i].monaie;
 			tmp = GET(Delta, i) * MGET(data.SousJacentsPrice, nt, i);// ici on par de l hipotese que l information du rate est deja comprise dans le delta
-			totalHedge += tmp * GET(data.CurencyRates, monaieIndice);
+			totalHedge += tmp * MGET(data.CurencyRates, nt, monaieIndice);
 			pnl_vect_set(data.Hedge, i, tmp);
 			pnl_vect_set(totalmonaie, monaieIndice, GET(totalmonaie, monaieIndice) + tmp);
 		}
 		//hedge  : argent actif en monaie etrangere  : zc euro : zc erangé monaie etrangere 
 		for (int i = 1; i <= option->GetNbForeignCurrency(); i++) {
 			tmp = GET(Delta, option->GetSousjacentsSize() + i - 1) - GET(totalmonaie, i);// delta *1 - total monaie etrangere
-			totalHedge += tmp * GET(data.CurencyRates, i);
+			totalHedge += tmp * MGET(data.CurencyRates, nt , i);
 			pnl_vect_set(data.Hedge, option->GetSousjacentsSize() + i, tmp);
 		}
 

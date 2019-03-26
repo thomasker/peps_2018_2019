@@ -16,7 +16,10 @@ namespace prisma.Controllers
 
         [DllImport(@"cpp/build/libprisma-cpp.so")]
         public static extern int returnInteger();
-        
+
+        [DllImport(@"cpp/build/libprisma-cpp.so")]
+        public static extern char[] jsonprisma();
+
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()

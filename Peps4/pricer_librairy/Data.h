@@ -51,12 +51,13 @@ namespace Outils
 		Data(Produit* produit);
 
 		PnlVect* ZeroRates; // taux de rendement (eur -- autres curency) 
-		PnlVect* CurencyRates; // taux de change ( 1 -- autre taux de change)
+		//PnlVect* CurencyRates; // taux de change ( 1 -- autre taux de change)
 		PnlVect* Hedge; // constitution du portefuille de couverture a une date ( sous jecents  -- zero coupons )
 		PnlVect* HedgePriceHistory;// historique des prix du portefeuille de couverture 
 		PnlVect* ProductPriceHistory; // historique des prix du produit
 
 		PnlMat* SousJacentsPrice; // historique des prix des sous jacents avec une ligne par date et chaque ligne:( sous jacents  -- Curency)
+		PnlMat* CurencyRates; // taux de change ( 1 -- autre taux de change)
 
 		double GetHistoricVolatilitySouJacent(SousJacent sj, int date);
 		void GetHistoricAllVolatilitySouJacent(PnlVect* VolatilityVect, int date);
