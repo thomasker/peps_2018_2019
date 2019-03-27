@@ -34,18 +34,22 @@ namespace Produits
 		PRICER_API Prisma(PnlVectInt* _QuarterlyObservationDates, PnlVectInt* _AnnualObservationDates, PnlVectInt* _DividendesDates, PnlVectInt* _Dates);
 		PRICER_API virtual ~Prisma();
 
+		PnlVectInt* DividendesDates;
 	private:
 		int sousJacentsSize;
 		double DividendAmont;
 		double GuaranteedRefund;
 		double Turnout;
 		double FixedPremium;
+		double MinimalPercentage;
+		PnlVect* P0;
+
 		
 		// contien un des entiers , correspondant au dates d'evaluations, 
 		//a remplire dinamiquement en fonction des date de debut et de fin , clin d oeil
 		PnlVectInt* QuarterlyObservationDates;
 		PnlVectInt* AnnualObservationDates;
-		PnlVectInt* DividendesDates;
+		
 		PnlVectInt* Dates;
 
 		

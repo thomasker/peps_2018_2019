@@ -12,7 +12,7 @@ using namespace std;
 namespace Outils
 {
 	
-	class  TimeManager
+	class TimeManager
 	{
 	public:
 		/*
@@ -26,6 +26,8 @@ namespace Outils
 		* start et end sont inclus , si il sont des jours ouvré
 		*/
 		static void fillOpenDates(PnlVectInt* dates, date  start, date  end);
+
+		static string GetDateInFormat( date  start, int nbDay);
 	};
 
 }

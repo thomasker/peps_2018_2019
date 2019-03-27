@@ -24,10 +24,11 @@ namespace Pricing
 		static void hedgeBasket();
 		static string hedgePrisma();
 
-		
+		static void HistoricData();
 	private:
 		static string  JsonPrisma(Data datas, int nbday);
 		static double PriceHedge(Produit* option, Data data, int nt, int dt);
 		static void CreatPortfolio(Produit* option, Data data, int nt, PnlVect* Delta);
+		static void DividendEvent(Prisma* option, Data data, int nt);
 	};
 }

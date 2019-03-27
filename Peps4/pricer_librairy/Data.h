@@ -56,8 +56,8 @@ namespace Outils
 		PnlVect* HedgePriceHistory;// historique des prix du portefeuille de couverture 
 		PnlVect* ProductPriceHistory; // historique des prix du produit
 
-		PnlMat* SousJacentsPrice; // historique des prix des sous jacents avec une ligne par date et chaque ligne:( sous jacents  -- Curency)
-		PnlMat* CurencyRates; // taux de change ( 1 -- autre taux de change)
+		PnlMat* SousJacentsPrice; // historique des prix des sous jacents avec une ligne par date et chaque ligne:( sous jacents -- 1 -- Curency)
+		//PnlMat* CurencyRates; // taux de change ( 1 -- autre taux de change)
 
 		double GetHistoricVolatilitySouJacent(SousJacent sj, int date);
 		void GetHistoricAllVolatilitySouJacent(PnlVect* VolatilityVect, int date);

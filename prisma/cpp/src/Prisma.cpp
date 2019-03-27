@@ -1,4 +1,3 @@
-
 #include "Prisma.h"
 #include "Date.h"
 #include "TimeManager.h"
@@ -9,25 +8,37 @@ using namespace Outils;
 
 namespace Produits
 {
-	double Prisma::GetPrice(PnlMat * paths, double r, int t)
+	double Prisma::GetPrice(PnlMat * paths, double r, int nt)
 	{
+		int t = pnl_vect_int_get(Dates, nt);
 		return  GetPayOff(paths)*exp(-r * (_T -t )) + Dividendes(r, t);
 	}
 
-	double Prisma::GetPayOff(PnlMat* paths)
+	double Prisma::GetPayOff(PnlMat* paths)//les paths contienne maintenant les prix et les taux
 	{
+		curency mmonaiejs = EUR;
+		if (P0 == NULL) {
+			P0 = pnl_vect_create(sousJacentsSize);
+			for (int j = 0; j < sousJacentsSize; j++)
+			{
+				mmonaiejs = sousJacents[j].monaie;
+				double test1 = pnl_mat_get(paths, j, 0);
+				double test2 = pnl_mat_get(paths, sousJacentsSize + mmonaiejs, 0);
+				pnl_vect_set(P0,j, test1 / test2);
+			}
+		}
 		double prime = GuaranteedRefund;
 		bool continu = true;
 		int tmp = 0;
-		//int test = 0;
 		//double test2 = 0.;
 		for (int i = 0; i < QuarterlyObservationDates->size; i++)
 		{
 			tmp = (*InversedDates)[(int)pnl_vect_int_get(QuarterlyObservationDates, i)];
-			for (int j = 0; j < paths->m; j++)
+			for (int j = 0; j < sousJacentsSize; j++)
 			{
 				//test = pnl_mat_get(paths, j, tmp);
-				if (pnl_mat_get(paths, j, tmp) < 60)
+				mmonaiejs = sousJacents[j].monaie;
+				if (pnl_mat_get(paths, j, tmp) / pnl_mat_get(paths, sousJacentsSize + mmonaiejs, tmp) < MinimalPercentage*GET(P0, j))
 				{
 					continu = false;
 				}
@@ -40,16 +51,17 @@ namespace Produits
 		}
 		double sum = 0;
 		double S0 = 0;
-		
-		for (int i = 0; i < paths->m; i++)
+
+		for (int i = 0; i < sousJacentsSize; i++)
 		{
-			S0 = pnl_mat_get(paths, i, 0);
+			S0 = GET(P0, i);
+			mmonaiejs = sousJacents[i].monaie;
 			for (int j = 0; j < AnnualObservationDates->size; j++)
 			{
 				//test = (int)pnl_vect_int_get(AnnualObservationDates, j);
 				tmp = (*InversedDates)[(int)pnl_vect_int_get(AnnualObservationDates, j)];
 				//test2 = (pnl_mat_get(paths, i, tmp) - S0) / S0;
-				sum += (pnl_mat_get(paths, i, tmp) - S0) / S0;
+				sum += (pnl_mat_get(paths, i, tmp) / pnl_mat_get(paths, sousJacentsSize + mmonaiejs, tmp) - S0) / S0;
 			}
 		}
 		if (sum > 0)
@@ -58,7 +70,6 @@ namespace Produits
 		}
 		return prime;
 	}
-
 	double Prisma::Dividendes(double r, int day)
 	{
 		double sum = 0;

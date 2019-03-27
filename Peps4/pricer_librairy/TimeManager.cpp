@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "TimeManager.h"
+#include <sstream>
+#include <iostream>
+#include <fstream>
 
 namespace Outils
 {
@@ -40,6 +43,17 @@ namespace Outils
 			}
 		}
 		pnl_vect_int_resize(dates, i);
+	}
+
+	string TimeManager::GetDateInFormat(date start, int nbDay)
+	{
+		date result = date(start);
+		for (int i = 0; i < nbDay; i++) {
+			result.addDay();
+		}
+		std::ostringstream strs;
+		strs << result._anne << "-" << result._mois << "-" << result._jour;
+		return strs.str();
 	}
 
 }

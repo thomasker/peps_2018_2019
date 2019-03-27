@@ -1,5 +1,9 @@
 #include "Pricing.h"
 #include <sstream>
+#include <iostream>
+#include <fstream>
+
+using namespace std;
 
 namespace Pricing
 {
@@ -260,7 +264,7 @@ namespace Pricing
 		data.SetVolatilitySouJacent(sigmaVect);
 		/*ici c est des truc que je peut integré a data */
 		PnlVect* Deltha = pnl_vect_create_from_double(option->GetSousjacentsSize(), 0);
-		PnlVect* fisrtPrice = pnl_vect_create_from_double(option->GetSousjacentsSize(), S0);
+		PnlVect* fisrtPrice = pnl_vect_create_from_double(option->GetSousjacentsSize()+ 1, S0);// pas grave si le taux EUR/EUR est a S0 et pas a 1
 		pnl_vect_print(fisrtPrice);
 		//pnl_mat_print(data.SousJacentsPrice);
 		pnl_mat_set_row(data.SousJacentsPrice, fisrtPrice, 0);
@@ -359,7 +363,7 @@ namespace Pricing
 		data.SetCorrelations(correlation);
 		/*ici c est des truc que je peut integré a data */
 		PnlVect* Deltha = pnl_vect_create_from_double(option->GetSousjacentsSize(), 0);
-		PnlVect* fisrtPrice = pnl_vect_create_from_double(option->GetSousjacentsSize(), S0);
+		PnlVect* fisrtPrice = pnl_vect_create_from_double(option->GetSousjacentsSize()+1, S0);
 		pnl_vect_print(fisrtPrice);
 		//pnl_mat_print(data.SousJacentsPrice);
 		pnl_mat_set_row(data.SousJacentsPrice, fisrtPrice, 0);
@@ -454,7 +458,7 @@ namespace Pricing
 		double sigma = 0.01;
 
 		// initialisation des doné utile pour l'evaluation du prix 
-		int n = 1000;
+		int n = 10;
 		int T = 0;//inutile ici 
 
 		//creation des objects 
@@ -465,21 +469,29 @@ namespace Pricing
 
 
 		PnlVect* sigmaVect = pnl_vect_create_from_double(option->GetSousjacentsSize(), sigma);
+		PnlVect* sigmaCurency = pnl_vect_create_from_double(option->GetNbForeignCurrency(), sigma);
 		PnlVect* diag = pnl_vect_create_from_double(option->GetSousjacentsSize() + option->GetNbForeignCurrency(), 1);
 		PnlMat* correlation = pnl_mat_create_diag(diag);
 
 
 		pnl_vect_set(data.ZeroRates, 0, r);
 		data.SetVolatilitySouJacent(sigmaVect);
+		data.SetVolatilityCurency(sigmaCurency);
 		data.SetCorrelations(correlation);
 		/*ici c est des truc que je peut integré a data */
-		PnlVect* Delta = pnl_vect_create_from_double(option->GetSousjacentsSize()+ option->GetNbForeignCurrency(), 0);
-		PnlVect* fisrtPrice = pnl_vect_create_from_double(option->GetSousjacentsSize(), S0);
+		PnlVect* Delta = pnl_vect_create_from_double(option->GetSousjacentsSize()+ 1+option->GetNbForeignCurrency(), 0);
+		PnlVect* fisrtPrice = pnl_vect_create_from_double(data.SousJacentsPrice->n,1.);
+		for (int k = 0; k < option->GetSousjacentsSize(); k++) {
+			pnl_vect_set(fisrtPrice, k, S0);
+		}
+		cout << "First prices : \n";
+		pnl_vect_print(fisrtPrice);
 		pnl_mat_set_row(data.SousJacentsPrice, fisrtPrice, 0);
 
 
 		// 1ere date 
 		// calculé le prix , et les delta,
+		cout << "calcule des delta 1 er jour  \n";
 		mc.GetDelta(Delta, BnS, option, data, pnl_mat_transpose(data.SousJacentsPrice), n, 0);
 		pnl_vect_set(data.ProductPriceHistory, 0, mc.GetPrice());
 		pnl_vect_set(data.HedgePriceHistory, 0, mc.GetPrice());
@@ -488,21 +500,29 @@ namespace Pricing
 		double totalHedge = 0.;
 		double tmp = 0.;
 		CreatPortfolio(option, data, 0, Delta);
-		int nbday = 5;
+		int nbday = 10;
 
-
+		PnlVect* test1 = pnl_vect_create(data.SousJacentsPrice->n);
 		double prix = 0.;
 		int dt = 0;
 		//autres date
 		for (int nt = 1; nt < nbday; nt++) {//option->GetDates()->size - 1
 			dt = pnl_vect_int_get(option->GetDates(), nt) - pnl_vect_int_get(option->GetDates(), nt - 1);
 			// evolution des prix des sous jacents
+			cout << "Generate Next Date Prices and changes\n";
 			mc.GenerateNextDatePrices(BnS, option, data, nt);
+			pnl_mat_get_row(test1, data.SousJacentsPrice, nt);
+			pnl_vect_print(test1);
 			//  calcul du prix , et des delta et le prix du portefeille de couverture
+			cout << "calcule des delta "<<nt<<"th jour  \n";
 			mc.GetDelta(Delta, BnS, option, data, pnl_mat_transpose(data.SousJacentsPrice), n, nt);
 			pnl_vect_set(data.ProductPriceHistory, nt, mc.GetPrice());
 			//cout << "le nouveau prix : "<< mc.GetPrice() <<"\n";
 			PriceHedge(option, data, nt, dt);
+
+			//evenement dividende
+			DividendEvent(option, data, nt);
+
 			// créée le portefeuille de couverture
 			CreatPortfolio( option,  data,  nt, Delta);
 
@@ -531,10 +551,53 @@ namespace Pricing
 		cout << "le pnl : " << pnl << "\n";
 		return JsonPrisma(data, nbday);
 	}
+	void PricingOptions::HistoricData()
+	{
+		string strReplace = "tata";
+		string strNew = "la pauvre";
+		ifstream filein("DataBasse.txt"); //File to read from
+		ofstream fileout("DataBasseTemp.txt"); //Temporary file
+		if (!filein || !fileout)
+		{
+			cout << "Error opening files!" << endl;
+			return ;
+		}
+
+		string strTemp;
+		//bool found = false;
+		while (filein >> strTemp)
+		{
+			if (strTemp == strReplace) {
+				strTemp = strNew;
+				//found = true;
+			}
+			strTemp += "\n";
+			fileout << strTemp;
+			//if(found) break;
+		}
+		return ;
+	}
 	string PricingOptions::JsonPrisma(Data datas, int nbday)
 	{
+		PnlVectInt* dates= datas._produit->GetDates();
+		date result = date(3, 10, 2002, Jeudi);
+		int nb = 0;
+		int nbold = 0;
 		std::ostringstream strs;
 		strs << "{ \n";
+		strs << "\"Dates\" : [";
+		for (int i = 0; i < nbday; i++) {
+			if (i != 0) {
+				strs << ", ";
+			}
+			nb =pnl_vect_int_get(datas._produit->GetDates(),i);
+			for (int j = nbold; j < nb; j++) {
+				result.addDay();
+			}
+			strs << result._anne << "-" << result._mois << "-" << result._jour;
+			nbold = nb;
+		}
+		strs << "],\n";
 		strs << "\"SousJacentsPrice\" : [\n";
 		std::string str = strs.str();
 		for (int i = 0; i < nbday; i++) {
@@ -578,10 +641,26 @@ namespace Pricing
 		int monaieIndice = 0;
 		for (int i = 0; i < option->GetSousjacentsSize(); i++) {
 			monaieIndice = option->GetSousjacents()[i].monaie;
-			prix += GET(data.Hedge, i)* MGET(data.SousJacentsPrice, nt, i) / MGET(data.SousJacentsPrice, nt - 1, i)* MGET(data.CurencyRates, nt , monaieIndice);
+			//  double totalEtrangerHier = GET(data.Hedge, i) / MGET(data.SousJacentsPrice, nt-1, option->GetSousjacentsSize() + monaieIndice);
+			//  double PrixEtrangerHier = MGET(data.SousJacentsPrice, nt - 1, i) / MGET(data.SousJacentsPrice, nt - 1, option->GetSousjacentsSize() + monaieIndice);
+			//  double PrixEtrangerAuj = MGET(data.SousJacentsPrice, nt , i) / MGET(data.SousJacentsPrice, nt , option->GetSousjacentsSize() + monaieIndice);
+			//  double evolutionEtranger = PrixEtrangerAuj / PrixEtrangerHier;
+			//  double totalEtrangerAuj = totalEtrangerHier * evolutionEtranger;
+			//  double totalAuj = totalEtrangerAuj* MGET(data.SousJacentsPrice, nt, option->GetSousjacentsSize() + monaieIndice);
+			//  TEH= H/r(-1)   PEH= P(-1)/r(-1)   PEA =P(0)/r(0)   EE =PEA/PEH   TEA=TEH*EE    TA =TEA*r(0)
+			//  TA =TEH*EE*r(0)
+			//  TA =H*EE*r(0)/r(-1)
+			//  EE= P(0)/P(-1)*r(-1)/r(0)
+			//  TA =H*P(0)/P(-1)    *       r(-1)/r(0)*r(0)/r(-1)
+			prix += GET(data.Hedge, i)* MGET(data.SousJacentsPrice, nt, i) / MGET(data.SousJacentsPrice, nt - 1, i);//* MGET(data.SousJacentsPrice, nt , option->GetSousjacentsSize() + monaieIndice);
 		}
 		for (int i = 0; i <= option->GetNbForeignCurrency(); i++) {
-			prix += GET(data.Hedge, option->GetSousjacentsSize() + i) *pow(1 + GET(data.ZeroRates, i), dt)* MGET(data.CurencyRates, nt , i);
+			// double totalEtrangerHier = GET(data.Hedge, option->GetSousjacentsSize() + i)/ MGET(data.SousJacentsPrice, nt - 1, option->GetSousjacentsSize() + i);
+			// double totalEtrangerAuj = totalEtrangerHier * pow(1 + GET(data.ZeroRates, i), dt);
+			// double totalAuj = totalEtrangerAuj * MGET(data.SousJacentsPrice, nt, option->GetSousjacentsSize() + i);
+			// TEH= H/r(-1)   TEA=TEH*R(E)    TA =TEA*r(0)
+			// TA =H*R(E)*r(0)/r(-1)
+			prix += GET(data.Hedge, option->GetSousjacentsSize() + i) *pow(1 + GET(data.ZeroRates, i), dt)* MGET(data.SousJacentsPrice, nt , option->GetSousjacentsSize() + i)/ MGET(data.SousJacentsPrice, nt-1, option->GetSousjacentsSize() + i);
 		}
 		pnl_vect_set(data.HedgePriceHistory, nt, prix);
 		return prix;
@@ -595,19 +674,31 @@ namespace Pricing
 		for (int i = 0; i < option->GetSousjacentsSize(); i++) {
 			monaieIndice = option->GetSousjacents()[i].monaie;
 			tmp = GET(Delta, i) * MGET(data.SousJacentsPrice, nt, i);// ici on par de l hipotese que l information du rate est deja comprise dans le delta
-			totalHedge += tmp * MGET(data.CurencyRates, nt, monaieIndice);
+			totalHedge += tmp; //* MGET(data.SousJacentsPrice, nt, option->GetSousjacentsSize() + monaieIndice);
 			pnl_vect_set(data.Hedge, i, tmp);
+			//tmp /= MGET(data.SousJacentsPrice, nt, option->GetSousjacentsSize() + monaieIndice);//new
 			pnl_vect_set(totalmonaie, monaieIndice, GET(totalmonaie, monaieIndice) + tmp);
 		}
 		//hedge  : argent actif en monaie etrangere  : zc euro : zc erangé monaie etrangere 
 		for (int i = 1; i <= option->GetNbForeignCurrency(); i++) {
-			tmp = GET(Delta, option->GetSousjacentsSize() + i - 1) - GET(totalmonaie, i);// delta *1 - total monaie etrangere
-			totalHedge += tmp * MGET(data.CurencyRates, nt , i);
+			tmp = GET(Delta, option->GetSousjacentsSize() + i) - GET(totalmonaie, i);// delta *1 - total monaie etrangere
+			totalHedge += tmp;//* MGET(data.SousJacentsPrice, nt , option->GetSousjacentsSize() + i);
 			pnl_vect_set(data.Hedge, option->GetSousjacentsSize() + i, tmp);
 		}
 
 		pnl_vect_set(data.Hedge, option->GetSousjacentsSize(), GET(data.HedgePriceHistory, nt) - totalHedge);
 
 		pnl_vect_free(&totalmonaie);
+	}
+
+	void PricingOptions::DividendEvent(Prisma* option, Data data, int nt) {
+		int t = pnl_vect_int_get(option->GetDates(), nt);
+		for (int i = 0; i < option->DividendesDates->size; i++) {
+			if (t == pnl_vect_int_get(option->DividendesDates, i)) {
+				pnl_vect_set(data.HedgePriceHistory, nt, GET(data.HedgePriceHistory, nt) - 6);// ATENTION le DIVIDENT EST HARD CODER
+				cout << " ATENTION EVENT\n";
+				return; 
+			}
+		}
 	}
 }
